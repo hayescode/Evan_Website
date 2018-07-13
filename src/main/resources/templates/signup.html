@@ -4,7 +4,7 @@
 
 <body class="container">
     <nav th:replace="fragments :: navigation"></nav>
-    <form th:object="${userForm}" method="post">
+    <form th:object="${signUpForm}" method="post">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username"  th:field="*{username}" placeholder="Enter username" />

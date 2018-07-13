@@ -1,7 +1,8 @@
 package com.lynn.lynn.controllers;
 
 import com.lynn.lynn.models.Data.UserDAO;
-import com.lynn.lynn.models.Forms.UserForm;
+import com.lynn.lynn.models.Forms.LoginForm;
+import com.lynn.lynn.models.Forms.SignUpForm;
 import com.lynn.lynn.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,24 @@ public class indexController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String login(Model model) {
+    public String displayLogin(Model model) {
+        model.addAttribute("loginForm", new LoginForm());
+        model.addAttribute("title", "Log In");
+        return "login.html";
+    }
+
+    @RequestMapping(value = "login", method = RequestMethod.POST)
+    public String processLogin(Model model, @ModelAttribute @Valid LoginForm form, Errors errors) {
+        if(errors.hasErrors()) {
+            model.addAttribute("title", "Log In");
+            return "login.html";
+        }
+
+        User user = userDAO.findIdByUsername(form.getUsername());
+
+        if (user != null && user.getPassword().equals(form.getPassword())) {
+            model.addAttribute("test", user.getPassword());
+        }
         model.addAttribute("title", "Log In");
         return "login.html";
     }
@@ -41,12 +59,12 @@ public class indexController {
     @RequestMapping(value = "signup", method = RequestMethod.GET)
     public String displaySignup(Model model) {
         model.addAttribute("title", "Sign Up");
-        model.addAttribute("userForm", new UserForm());
+        model.addAttribute("signUpForm", new SignUpForm());
         return "signup.html";
     }
 
     @RequestMapping(value = "signup", method = RequestMethod.POST)
-    public String processSignup(Model model, @ModelAttribute @Valid UserForm user, Errors errors) {
+    public String processSignup(Model model, @ModelAttribute @Valid SignUpForm user, Errors errors) {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Sign Up");
             model.addAttribute("errors", errors);

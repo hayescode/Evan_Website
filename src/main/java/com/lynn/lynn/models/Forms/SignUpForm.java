@@ -3,7 +3,7 @@ package com.lynn.lynn.models.Forms;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
-public class UserForm {
+public class SignUpForm {
 
     @Size(min = 1, message = "Enter a username")
     private String username;
@@ -18,9 +18,9 @@ public class UserForm {
     @Size(min = 1, message = "Passwords must match")
     private String verify;
 
-    public UserForm() {}
+    public SignUpForm() {}
 
-    public UserForm(String aUsername, String aEmail, String aPassword, String aVerify) {
+    public SignUpForm(String aUsername, String aEmail, String aPassword, String aVerify) {
         this.username = aUsername;
         this.email = aEmail;
         this.password = aPassword;
