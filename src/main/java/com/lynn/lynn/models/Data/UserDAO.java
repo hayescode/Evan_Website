@@ -1,9 +1,7 @@
 package com.lynn.lynn.models.Data;
 
-import com.lynn.lynn.models.User;
-import org.springframework.data.jpa.repository.Query;
+import com.lynn.lynn.models.User.User;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;

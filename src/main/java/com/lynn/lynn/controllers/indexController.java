@@ -3,7 +3,8 @@ package com.lynn.lynn.controllers;
 import com.lynn.lynn.models.Data.UserDAO;
 import com.lynn.lynn.models.Forms.LoginForm;
 import com.lynn.lynn.models.Forms.SignUpForm;
-import com.lynn.lynn.models.User;
+import com.lynn.lynn.models.User.PasswordUtils;
+import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,10 +49,19 @@ public class indexController {
         }
 
         User user = userDAO.findIdByUsername(form.getUsername());
+        String[] userPasswordParts = user.getPassword().split(",");
+        String userHash = userPasswordParts[0];
+        String userSalt = userPasswordParts[1];
+        String loginPassword = PasswordUtils.generateSecurePassword(form.getPassword(),userSalt);
 
-        if (user != null && user.getPassword().equals(form.getPassword())) {
-            model.addAttribute("test", user.getPassword());
+        if(user != null && loginPassword.equals(userHash)) {
+            model.addAttribute("test", loginPassword);
+            return "login.html";
         }
+
+//        if (user != null && user.getPassword().equals(form.getPassword())) {
+//            model.addAttribute("test", salt);
+//        }
         model.addAttribute("title", "Log In");
         return "login.html";
     }

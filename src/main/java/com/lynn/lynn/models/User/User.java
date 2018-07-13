@@ -1,4 +1,4 @@
-package com.lynn.lynn.models;
+package com.lynn.lynn.models.User;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +20,14 @@ public class User {
     public User(String aUsername, String aEmail, String aPassword) {
         this.username = aUsername;
         this.email = aEmail;
-        this.password = aPassword;
+        this.password = hashedPassword(aPassword);
+    }
+
+    //http://www.appsdeveloperblog.com/encrypt-user-password-example-java/
+    private String hashedPassword(String password) {
+        String salt = PasswordUtils.getSalt(32);
+        String hashedPassword = PasswordUtils.generateSecurePassword(password,salt);
+        return hashedPassword + "," + salt;
     }
 
     public int getId() {
