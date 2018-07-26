@@ -3,6 +3,7 @@ package com.lynn.lynn.controllers;
 import com.lynn.lynn.models.Data.UserDAO;
 import com.lynn.lynn.models.Forms.LoginForm;
 import com.lynn.lynn.models.Forms.SignUpForm;
+import com.lynn.lynn.models.Images.Images;
 import com.lynn.lynn.models.User.PasswordUtils;
 import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,14 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 
 
 @Controller
@@ -25,13 +32,31 @@ public class indexController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("title", "Home Page");
+        model.addAttribute("fileCount", Images.countImages());
         return "index.html";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String add(Model model) {
+    public String displayAdd(Model model) {
         model.addAttribute("title", "Add Images");
         return "add.html";
+    }
+
+    @RequestMapping(value = "add", method = RequestMethod.POST)
+    public String processAdd(@RequestParam("file")MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
+
+        try {
+            if (!file.isEmpty()) {
+                BufferedImage src = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
+                File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
+                ImageIO.write(src, "jpg", destination);
+            }
+        } catch (Exception e) {
+            System.out.println("Exception occured" + e.getMessage());
+        }
+        return "index.html";
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
