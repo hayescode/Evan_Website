@@ -1,9 +1,11 @@
 package com.lynn.lynn.controllers;
 
+import com.lynn.lynn.models.Data.ImagesDAO;
 import com.lynn.lynn.models.Data.UserDAO;
 import com.lynn.lynn.models.Forms.LoginForm;
 import com.lynn.lynn.models.Forms.SignUpForm;
 import com.lynn.lynn.models.Images.Images;
+import com.lynn.lynn.models.Images.fileImages;
 import com.lynn.lynn.models.User.PasswordUtils;
 import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,33 +31,40 @@ public class indexController {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private ImagesDAO imagesDAO;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("title", "Home Page");
-        model.addAttribute("fileCount", Images.countImages());
+        model.addAttribute("fileCount", imagesDAO.count());
+        model.addAttribute("images", imagesDAO.findAll());
         return "index.html";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
-        model.addAttribute("title", "Add Images");
+        model.addAttribute("title", "Add fileImages");
         return "add.html";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAdd(@RequestParam("file")MultipartFile file) {
+    public String processAdd(@RequestParam("file")MultipartFile file, @RequestParam("title") String title, @RequestParam("caption") String caption) {
         String fileName = file.getOriginalFilename();
         File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
-
         try {
             if (!file.isEmpty()) {
                 BufferedImage src = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
+                //TODO change path once on server
                 File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
                 ImageIO.write(src, "jpg", destination);
             }
         } catch (Exception e) {
             System.out.println("Exception occured" + e.getMessage());
         }
+        String path = "/images/" + fileName;
+        Images newImage = new Images(path,title,caption);
+        imagesDAO.save(newImage);
         return "index.html";
     }
 
