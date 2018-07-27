@@ -1,9 +1,9 @@
 package com.lynn.lynn.models.Images;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.lynn.lynn.models.Category.Category;
+
+import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 @Table(name = "images")
@@ -15,6 +15,9 @@ public class Images {
     private String path;
     private String title;
     private String caption;
+
+    @ManyToOne
+    private Category category;
 
     public Images() {}
 
@@ -50,5 +53,13 @@ public class Images {
 
     public void setCaption(String caption) {
         this.caption = caption;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

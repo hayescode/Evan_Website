@@ -10,7 +10,7 @@
 
 <div class="container">
     <div th:each="image : ${images}" class="mySlides">
-        <div class="numbertext">1 / 6</div>
+        <div class="numbertext" th:text="${image.id} + ' / ' + ${images.size()}">1 / 6</div>
         <img th:src="@{${image.path}}" style="width:100%">
     </div>
 

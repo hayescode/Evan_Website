@@ -1,5 +1,7 @@
 package com.lynn.lynn.controllers;
 
+import com.lynn.lynn.models.Category.Category;
+import com.lynn.lynn.models.Data.CategoryDAO;
 import com.lynn.lynn.models.Data.ImagesDAO;
 import com.lynn.lynn.models.Data.UserDAO;
 import com.lynn.lynn.models.Forms.LoginForm;
@@ -23,6 +25,7 @@ import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.Optional;
 
 
 @Controller
@@ -34,6 +37,9 @@ public class indexController {
     @Autowired
     private ImagesDAO imagesDAO;
 
+    @Autowired
+    private CategoryDAO categoryDAO;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("title", "Home Page");
@@ -44,12 +50,16 @@ public class indexController {
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
-        model.addAttribute("title", "Add fileImages");
+        model.addAttribute("title", "Add Images");
+        model.addAttribute("categories", categoryDAO.findAll());
         return "add.html";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAdd(@RequestParam("file")MultipartFile file, @RequestParam("title") String title, @RequestParam("caption") String caption) {
+    public String processAdd(@RequestParam("file")MultipartFile file,
+                             @RequestParam("title") String title,
+                             @RequestParam("caption") String caption,
+                             @RequestParam("category") int categoryId) {
         String fileName = file.getOriginalFilename();
         File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
         try {
@@ -64,8 +74,19 @@ public class indexController {
         }
         String path = "/images/" + fileName;
         Images newImage = new Images(path,title,caption);
+        Optional<Category> oCat = categoryDAO.findById(categoryId);
+        Category cat = oCat.get();
+        newImage.setCategory(cat);
         imagesDAO.save(newImage);
         return "index.html";
+    }
+
+    @RequestMapping(value = "add_category", method = RequestMethod.POST)
+    public String processAddCategory(@RequestParam("category") String category, Model model) {
+        Category newCategory = new Category(category);
+        categoryDAO.save(newCategory);
+        model.addAttribute("title", "Add Images");
+        return "redirect:/add";
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
