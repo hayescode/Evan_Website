@@ -100,25 +100,34 @@ public class indexController {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String processLogin(Model model, @ModelAttribute @Valid LoginForm form, Errors errors) {
         if(errors.hasErrors()) {
+            model.addAttribute("errors", errors);
             model.addAttribute("title", "Log In");
             return "login.html";
         }
 
         User user = userDAO.findIdByUsername(form.getUsername());
+
+        if(user == null) {
+            model.addAttribute("error", "Username Not Found");
+            model.addAttribute("title", "Log In");
+            return "login.html";
+        }
+
         String[] userPasswordParts = user.getPassword().split(",");
         String userHash = userPasswordParts[0];
         String userSalt = userPasswordParts[1];
         String loginPassword = PasswordUtils.generateSecurePassword(form.getPassword(),userSalt);
 
-        if(user != null && loginPassword.equals(userHash)) {
-            model.addAttribute("test", loginPassword);
+        if(!loginPassword.equals(userHash)) {
+            model.addAttribute("error", "Incorrect Password");
+            model.addAttribute("title", "Log In");
             return "login.html";
         }
 
-//        if (user != null && user.getPassword().equals(form.getPassword())) {
-//            model.addAttribute("test", salt);
-//        }
+        //session and persitent 'logged in' stuff here.
+
         model.addAttribute("title", "Log In");
+        model.addAttribute("test", userHash);
         return "login.html";
     }
 
