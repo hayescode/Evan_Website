@@ -10,21 +10,17 @@ import java.util.Optional;
 public class Images {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String path;
-    private String title;
-    private String caption;
 
     @ManyToOne
     private Category category;
 
     public Images() {}
 
-    public Images(String aPath, String aTitle, String aCaption) {
+    public Images(String aPath) {
         this.path = aPath;
-        this.title = aTitle;
-        this.caption = aCaption;
     }
 
     public int getId() {
@@ -37,22 +33,6 @@ public class Images {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
     }
 
     public Category getCategory() {

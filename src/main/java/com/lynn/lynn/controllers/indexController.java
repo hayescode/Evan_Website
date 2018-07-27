@@ -57,9 +57,8 @@ public class indexController {
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String processAdd(@RequestParam("file")MultipartFile file,
-                             @RequestParam("title") String title,
-                             @RequestParam("caption") String caption,
                              @RequestParam("category") int categoryId) {
+        //Add files to file system
         String fileName = file.getOriginalFilename();
         File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
         try {
@@ -72,8 +71,10 @@ public class indexController {
         } catch (Exception e) {
             System.out.println("Exception occured" + e.getMessage());
         }
+
+        //Add file to SQL database (table = images)
         String path = "/images/" + fileName;
-        Images newImage = new Images(path,title,caption);
+        Images newImage = new Images(path);
         Optional<Category> oCat = categoryDAO.findById(categoryId);
         Category cat = oCat.get();
         newImage.setCategory(cat);

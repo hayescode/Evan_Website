@@ -7,11 +7,10 @@
 
     <form method="POST" enctype="multipart/form-data">
         <div class="form-group">
-            <label>Add New Image</label>
-            <input type="text" class="form-control" name = "title" placeholder="Title" />
-            <input type="text" class="form-control" name = "caption" placeholder="Description" />
+            <label>Add New Images</label>
             <input type="file" class="form-control"name = "file" placeholder="Select Image" />
             <small class="form-text text-muted">Browse to the image you would like to upload.</small>
+            <label>Select Category</label>
             <select name="category">
                 <option th:each="category : ${categories}" th:text="${category.category}" th:value="${category.id}"></option>
             </select>
