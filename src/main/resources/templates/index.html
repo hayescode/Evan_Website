@@ -23,7 +23,7 @@
 
     <div class="row">
         <div th:each="image : ${images}" class="column">
-            <img class="demo cursor" th:src="@{${image.path}}" style="width:100%"  th:onclick="'currentSlide(' + ${image.id} + ')'" th:attr="alt=${image.title}">
+            <img class="demo cursor" th:src="@{${image.path}}" style="width:100%"  th:onclick="'currentSlide(' + ${image.id} + ')'">
         </div>
     </div>
 </div>

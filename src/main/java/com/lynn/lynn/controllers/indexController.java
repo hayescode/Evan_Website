@@ -56,29 +56,33 @@ public class indexController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAdd(@RequestParam("file")MultipartFile file,
+    public String processAdd(@RequestParam("files")MultipartFile[] files,
                              @RequestParam("category") int categoryId) {
-        //Add files to file system
-        String fileName = file.getOriginalFilename();
-        File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
-        try {
-            if (!file.isEmpty()) {
-                BufferedImage src = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
-                //TODO change path once on server
-                File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
-                ImageIO.write(src, "jpg", destination);
-            }
-        } catch (Exception e) {
-            System.out.println("Exception occured" + e.getMessage());
-        }
 
-        //Add file to SQL database (table = images)
-        String path = "/images/" + fileName;
-        Images newImage = new Images(path);
-        Optional<Category> oCat = categoryDAO.findById(categoryId);
-        Category cat = oCat.get();
-        newImage.setCategory(cat);
-        imagesDAO.save(newImage);
+        for(MultipartFile eachFile : files) {
+            //Add each file to the file system
+            String fileName = eachFile.getOriginalFilename();
+            //TODO change path once on server
+            File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
+            try {
+                if (!eachFile.isEmpty()) {
+                    BufferedImage src = ImageIO.read(new ByteArrayInputStream(eachFile.getBytes()));
+                    //TODO change path once on server
+                    File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
+                    ImageIO.write(src, "jpg", destination);
+                }
+            } catch (Exception e) {
+                System.out.println("Exception occured" + e.getMessage());
+            }
+
+            //Add file to SQL database (table = images)
+            String path = "/images/" + fileName;
+            Images newImage = new Images(path);
+            Optional<Category> oCat = categoryDAO.findById(categoryId);
+            Category cat = oCat.get();
+            newImage.setCategory(cat);
+            imagesDAO.save(newImage);
+        }
         return "index.html";
     }
 
