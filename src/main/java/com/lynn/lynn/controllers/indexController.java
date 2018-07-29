@@ -1,5 +1,13 @@
 package com.lynn.lynn.controllers;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.jpeg.JpegDirectory;
 import com.lynn.lynn.models.Category.Category;
 import com.lynn.lynn.models.Data.CategoryDAO;
 import com.lynn.lynn.models.Data.ImagesDAO;
@@ -7,7 +15,7 @@ import com.lynn.lynn.models.Data.UserDAO;
 import com.lynn.lynn.models.Forms.LoginForm;
 import com.lynn.lynn.models.Forms.SignUpForm;
 import com.lynn.lynn.models.Images.Images;
-import com.lynn.lynn.models.Images.fileImages;
+import com.lynn.lynn.models.Images.RotateImage;
 import com.lynn.lynn.models.User.PasswordUtils;
 import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +30,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.validation.Valid;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Optional;
-
 
 @Controller
 public class indexController {
@@ -43,7 +56,6 @@ public class indexController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("title", "Home Page");
-        model.addAttribute("fileCount", imagesDAO.count());
         model.addAttribute("images", imagesDAO.findAll());
         return "index.html";
     }
@@ -62,14 +74,28 @@ public class indexController {
         for(MultipartFile eachFile : files) {
             //Add each file to the file system
             String fileName = eachFile.getOriginalFilename();
-            //TODO change path once on server
-            File save = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
             try {
                 if (!eachFile.isEmpty()) {
-                    BufferedImage src = ImageIO.read(new ByteArrayInputStream(eachFile.getBytes()));
+                    //convert Multipart to file in order to get metadata
+                    File convFile = new File(eachFile.getOriginalFilename());
+                    convFile.createNewFile();
+                    FileOutputStream fos = new FileOutputStream(convFile);
+                    fos.write(eachFile.getBytes());
+                    fos.close();
+
+                    //get metadata, specifically orientation
+                    Metadata metadata = ImageMetadataReader.readMetadata(convFile);
+                    ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                    int orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                    //get degrees image needs to be rotated by
+                    int degrees = RotateImage.getExifTransformation(orientation);
+
+                    //rotate image and save to file system
                     //TODO change path once on server
-                    File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName); // something like C:/Users/tom/Documents/nameBasedOnSomeId.png
-                    ImageIO.write(src, "jpg", destination);
+                    File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
+                    BufferedImage src = ImageIO.read(new ByteArrayInputStream(eachFile.getBytes()));
+                    BufferedImage rotatedImage = RotateImage.rotate(src, degrees);
+                    ImageIO.write(rotatedImage, "jpg", destination);
                 }
             } catch (Exception e) {
                 System.out.println("Exception occured" + e.getMessage());
@@ -83,7 +109,7 @@ public class indexController {
             newImage.setCategory(cat);
             imagesDAO.save(newImage);
         }
-        return "index.html";
+        return "redirect:/";
     }
 
     @RequestMapping(value = "add_category", method = RequestMethod.POST)
