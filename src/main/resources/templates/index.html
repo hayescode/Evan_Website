@@ -6,62 +6,31 @@
 <nav th:replace="fragments :: navigation"></nav>
 
 
-<h2 style="text-align:center">Slideshow Gallery</h2>
-
-<div class="container">
-    <div th:each="image : ${images}" class="mySlides">
-        <div class="numbertext" th:text="${image.id} + ' / ' + ${images.size()}">1 / 6</div>
-        <img th:src="@{${image.path}}" style="width:100%">
-    </div>
-
-    <a class="prev" onclick="plusSlides(-1)">❮</a>
-    <a class="next" onclick="plusSlides(1)">❯</a>
-
-    <div class="caption-container">
-        <p id="caption"></p>
-    </div>
-
-    <div class="row">
-        <div th:each="image : ${images}" class="column">
-            <img class="demo cursor" th:src="@{${image.path}}" style="width:100%"  th:onclick="'currentSlide(' + ${image.id} + ')'">
-        </div>
-    </div>
+<div th:each="category : ${categories}" class="pic_categories">
+    <a th:href="${category.id}" ><button th:text="${category.category}" class="btn btn-outline-primary"></button></a>
 </div>
 
+<div class="demo">
+    <ul id="lightSlider" >
+        <li th:each="image : ${images}" th:attr="data-thumb=@{${image.path}}" class="caroselpics">
+            <img th:src="@{${image.path}}" />
+        </li>
+    </ul>
+</div>
 <script>
-var slideIndex = 1;
-showSlides(slideIndex);
-
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  var captionText = document.getElementById("caption");
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-  captionText.innerHTML = dots[slideIndex-1].alt;
-}
+    $('#lightSlider').lightSlider({
+    thumbItem: 5,
+    gallery: true,
+    item: 1,
+    loop: true,
+    slideMargin: 0,
+    controls: true,
+    prevHtml: '',
+    nextHtml: '',
+    adaptiveHeight: true,
+    currentPagerPosition:'left'
+});
 </script>
-
-
-<p th:text="${fileCount}"></p>
-
 
 </body>
 </html>

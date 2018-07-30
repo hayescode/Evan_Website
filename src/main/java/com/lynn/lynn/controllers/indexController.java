@@ -57,7 +57,7 @@ public class indexController {
     public String index(Model model) {
         model.addAttribute("title", "Home Page");
         model.addAttribute("images", imagesDAO.findAll());
-        //model.addAttribute("categories", categoryDAO.findAll())''
+        model.addAttribute("categories", categoryDAO.findAll());
         return "index.html";
     }
 
@@ -83,7 +83,7 @@ public class indexController {
                     FileOutputStream fos = new FileOutputStream(convFile);
                     fos.write(eachFile.getBytes());
                     fos.close();
-                    
+
                     BufferedImage src = ImageIO.read(new ByteArrayInputStream(eachFile.getBytes()));
 
                     //get metadata, specifically orientation
