@@ -1,48 +1,48 @@
 package com.lynn.lynn.models.Images;
 
-import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 
 public class RotateImage {
-    public static int getExifTransformation(int orientation) {
+    public static AffineTransform getTransform(int orientation, int width, int height) {
 
-        int degrees = 0;
+        AffineTransform affineTransform = new AffineTransform();
 
         switch (orientation) {
             case 1:
-                degrees = 0;
                 break;
-            case 2: //flip
+            case 2: // Flip X
+                affineTransform.scale(-1.0, 1.0);
+                affineTransform.translate(-width, 0);
                 break;
-            case 3:
-                degrees = 180;
+            case 3: // PI rotation
+                affineTransform.translate(width, height);
+                affineTransform.rotate(Math.PI);
                 break;
-            case 4: //flip
+            case 4: // Flip Y
+                affineTransform.scale(1.0, -1.0);
+                affineTransform.translate(0, -height);
                 break;
-            case 5: //flip
+            case 5: // - PI/2 and Flip X
+                affineTransform.rotate(-Math.PI / 2);
+                affineTransform.scale(-1.0, 1.0);
                 break;
-            case 6:
-                degrees = 90;
+            case 6: // -PI/2 and -width
+                affineTransform.translate(height, 0);
+                affineTransform.rotate(Math.PI / 2);
                 break;
-            case 7: //flip
+            case 7: // PI/2 and Flip
+                affineTransform.scale(-1.0, 1.0);
+                affineTransform.translate(-height, 0);
+                affineTransform.translate(0, width);
+                affineTransform.rotate(3 * Math.PI / 2);
                 break;
-            case 8:
-                degrees = 270;
+            case 8: // PI / 2
+                affineTransform.translate(0, width);
+                affineTransform.rotate(3 * Math.PI / 2);
+                break;
+            default:
                 break;
         }
-
-        return degrees;
-    }
-    public static BufferedImage rotate(BufferedImage img, int rotation)
-    {
-        int w = img.getWidth();
-        int h = img.getHeight();
-        BufferedImage newImage = new BufferedImage(w, h, img.getType());
-        Graphics2D g2 = newImage.createGraphics();
-        g2.rotate(Math.toRadians(rotation), w/2, h/2);
-        g2.drawImage(img,null,0,0);
-        return newImage;
+        return affineTransform;
     }
 }

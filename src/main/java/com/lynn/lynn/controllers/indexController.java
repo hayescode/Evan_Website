@@ -57,6 +57,7 @@ public class indexController {
     public String index(Model model) {
         model.addAttribute("title", "Home Page");
         model.addAttribute("images", imagesDAO.findAll());
+        //model.addAttribute("categories", categoryDAO.findAll())''
         return "index.html";
     }
 
@@ -82,20 +83,30 @@ public class indexController {
                     FileOutputStream fos = new FileOutputStream(convFile);
                     fos.write(eachFile.getBytes());
                     fos.close();
+                    
+                    BufferedImage src = ImageIO.read(new ByteArrayInputStream(eachFile.getBytes()));
 
                     //get metadata, specifically orientation
                     Metadata metadata = ImageMetadataReader.readMetadata(convFile);
                     ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-                    int orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-                    //get degrees image needs to be rotated by
-                    int degrees = RotateImage.getExifTransformation(orientation);
 
-                    //rotate image and save to file system
-                    //TODO change path once on server
-                    File destination = new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName);
-                    BufferedImage src = ImageIO.read(new ByteArrayInputStream(eachFile.getBytes()));
-                    BufferedImage rotatedImage = RotateImage.rotate(src, degrees);
-                    ImageIO.write(rotatedImage, "jpg", destination);
+                    int orientation = 1;
+                    try {
+                        orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    int width = src.getWidth();
+                    int height = src.getHeight();
+                    if (orientation == 3 || orientation == 6 || orientation == 8) {
+                        AffineTransform affineTransform = RotateImage.getTransform(orientation, width, height);
+                        AffineTransformOp affineTransformOp = new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_BILINEAR);
+                        BufferedImage destinationImage = new BufferedImage(height, width, src.getType());
+                        destinationImage = affineTransformOp.filter(src, destinationImage);
+                        ImageIO.write(destinationImage, "jpg", new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName));
+                    } else {
+                        ImageIO.write(src, "jpg", new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName));
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("Exception occured" + e.getMessage());
