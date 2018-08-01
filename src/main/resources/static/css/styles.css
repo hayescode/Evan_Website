@@ -5,13 +5,34 @@
 body {
   font-family: Arial;
   margin: 0;
-  /*background-color: gray;*/
-  /*background-image: url("http://www.technocrazed.com/wp-content/uploads/2015/12/Wood-Wallpaper-Background-33.jpg");*/
-  background-image: url("../images/Black_Wood_Background.png")
+  background-image: url("../images/site/Black_Wood_Background.png")
+}
+
+bg_image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-image: url("../images/site/Black_Wood_Background.png");
+}
+
+.shadow {
+    -webkit-box-shadow: inset 0px 0px 16px 6px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 16px 6px rgba(0,0,0,0.75);
+    box-shadow: inset 0px 0px 16px 6px rgba(0,0,0,0.75);
+}
+
+#logout_button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
 }
 
 .nav {
     background:transparent;
+    border-radius: 30px;
 }
 
 hr {

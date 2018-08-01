@@ -22,29 +22,44 @@
 
 <!--NAVIGATION FRAGMENT-->
 <div class="nav">
-    <nav th:fragment="navigation" class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">Evan Hayes</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/add">Add Pics <span class="sr-only">(current)</span></a>
-                </li>
-            </ul>
-        </div>
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/signup">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Log In</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div th:fragment="bg_image" class="bg_image">
+        <img src="/images/site/Black_Wood_Background.png" style="display:none;" />
+    </div>
+    <div th:fragment="navigation"  class="shadow">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">Evan Hayes</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/add">Add Pics <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul th:if="${user}" class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <p th:text="${user}" class="nav-link"></p>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" th:action="@{/logout}">
+                            <input type="submit" value="Sign Out" class="nav-link" id="logout_button" />
+                        </form>
+                    </li>
+                </ul>
+                <ul th:unless="${user}" class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/signup">Sign Up</a>
+                    </li>
+                    <li >
+                        <a class="nav-link" href="/login">Log In</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
 </div>
 </body>
 </html>

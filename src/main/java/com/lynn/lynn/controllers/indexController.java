@@ -53,10 +53,14 @@ public class indexController {
     private CategoryDAO categoryDAO;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model, HttpServletRequest request) {
+    public String index(Model model, Principal user) {
         model.addAttribute("title", "Home Page");
         model.addAttribute("images", imagesDAO.findAll());
         model.addAttribute("categories", categoryDAO.findAll());
+        if(user != null) {
+            String name = user.getName();
+            model.addAttribute("user",name);
+        }
         return "index.html";
     }
 

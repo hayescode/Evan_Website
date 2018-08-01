@@ -3,7 +3,8 @@
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
-    <nav th:replace="fragments :: navigation"></nav>
+    <div th:fragment="bg_image" class="bg_image">
+    <div th:replace="fragments :: navigation"></div>
     <form th:object="${signUpForm}" method="post" class="form-container">
         <div class="form-group">
             <label for="username" class="label">Username</label>
