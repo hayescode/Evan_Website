@@ -5,11 +5,39 @@
 body {
   font-family: Arial;
   margin: 0;
-  /*background-image: url("../images/background.jpg")*/
+  /*background-color: gray;*/
+  /*background-image: url("http://www.technocrazed.com/wp-content/uploads/2015/12/Wood-Wallpaper-Background-33.jpg");*/
+  background-image: url("../images/Black_Wood_Background.png")
+}
+
+.nav {
+    background:transparent;
+}
+
+hr {
+    /*display: block;*/
+    height: 1px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 1em;
+    clear: both;
+    width: 50%;
+}
+
+.label {
+    color: white;
+}
+
+.form-container {
+    margin-top: .5em;
+    clear: both;
+    float: left;
+    width: 50%;
 }
 
 .demo {
-    width:650px;
+    width:57%;
 }
 #lightSlider {
     list-style: none outside none;
@@ -25,6 +53,8 @@ body {
 img {
     display: block;
     height: auto;
+    height: 480px;
+    margin: auto;
     max-width: 100%;
 }
 

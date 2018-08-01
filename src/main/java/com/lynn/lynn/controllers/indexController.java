@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -39,6 +40,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -54,7 +56,7 @@ public class indexController {
     private CategoryDAO categoryDAO;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model) {
+    public String index(Model model, HttpServletRequest request) {
         model.addAttribute("title", "Home Page");
         model.addAttribute("images", imagesDAO.findAll());
         model.addAttribute("categories", categoryDAO.findAll());
@@ -181,12 +183,13 @@ public class indexController {
 
     @RequestMapping(value = "signup", method = RequestMethod.POST)
     public String processSignup(Model model, @ModelAttribute @Valid SignUpForm user, Errors errors) {
+        User foundUsername = userDAO.findIdByUsername(user.getUsername());
         if(errors.hasErrors()) {
             model.addAttribute("title", "Sign Up");
             model.addAttribute("errors", errors);
             return "signup.html";
         } else {
-            if(user.getPassword().equals(user.getVerify())) {
+            if(user.getPassword().equals(user.getVerify()) && foundUsername.getUsername() != user.getUsername()) {
                 User newUser = new User(user.getUsername(), user.getEmail(), user.getPassword());
                 userDAO.save(newUser);
                 model.addAttribute("test", "Success!");

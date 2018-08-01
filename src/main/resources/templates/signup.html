@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
     <nav th:replace="fragments :: navigation"></nav>
-    <form th:object="${signUpForm}" method="post">
+    <form th:object="${signUpForm}" method="post" class="form-container">
         <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username" class="label">Username</label>
             <input type="text" class="form-control" id="username"  th:field="*{username}" placeholder="Enter username" />
             <span th:errors="*{username}" class="error"></span>
         </div>
         <div class="form-group">
-            <label for="email">Email address</label>
+            <label for="email" class="label">Email address</label>
             <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter email" />
             <span th:errors="*{email}" class="error"></span>
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password" class="label">Password</label>
             <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password" />
             <span th:errors="*{password}" class="error"></span>
         </div>
         <div class="form-group">
-            <label for="verify">Verify Password</label>
+            <label for="verify" class="label">Verify Password</label>
             <input type="password" class="form-control" id="verify" th:field="*{verify}" placeholder="Verify password" />
             <span th:errors="*{verify}" class="error"></span>
         </div>

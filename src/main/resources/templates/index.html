@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
 <nav th:replace="fragments :: navigation"></nav>
 
-
-<div th:each="category : ${categories}" class="pic_categories">
-    <a th:href="${category.id}" ><button th:text="${category.category}" class="btn btn-outline-primary"></button></a>
+<div th:each="category : ${categories}" class="btn-group" style="margin-top: 5px; margin-bottom: 5px;">
+    <a th:href="${category.id}" ><button th:text="${category.category}" class="btn btn-light"></button></a>
 </div>
 
 <div class="demo">
