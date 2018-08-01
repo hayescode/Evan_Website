@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -59,6 +56,14 @@ public class indexController {
     public String index(Model model, HttpServletRequest request) {
         model.addAttribute("title", "Home Page");
         model.addAttribute("images", imagesDAO.findAll());
+        model.addAttribute("categories", categoryDAO.findAll());
+        return "index.html";
+    }
+
+    @RequestMapping(value = "/{cat_id}", method = RequestMethod.GET)
+    public String filteredIndex(Model model, HttpServletRequest request, @PathVariable(value = "cat_id") int cat_id) {
+        model.addAttribute("title", "Home Page");
+        model.addAttribute("images", imagesDAO.findByCategoryId(cat_id));
         model.addAttribute("categories", categoryDAO.findAll());
         return "index.html";
     }
