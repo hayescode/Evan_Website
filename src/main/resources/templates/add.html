@@ -3,13 +3,14 @@
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
-    <div th:replace="fragments :: navigation"></div>
+    <nav th:replace="fragments :: navigation"></nav>
 
     <form method="POST" enctype="multipart/form-data" class="form-container">
         <div class="form-group">
             <h4 class="label">Add New Images</h4>
             <input type="file" class="form-control"name = "files" placeholder="Select Image" multiple/>
-            <small class="form-text text-muted" style="color:white;">Browse to the image you would like to upload.</small>
+            <small class="label" style="color:black;">Browse to the image you would like to upload.</small>
+            <br>
             <label class="label">Select Category</label>
             <select name="category">
                 <option th:each="category : ${categories}" th:text="${category.category}" th:value="${category.id}"></option>

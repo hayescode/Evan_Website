@@ -5,7 +5,8 @@
 body {
   font-family: Arial;
   margin: 0;
-  background-image: url("../images/site/Black_Wood_Background.png")
+  background-image: url("https://www.desktopbackground.org/p/2015/08/04/989748_baby-blue-background-oqce_3888x2592_h.jpg");
+  /*background-image: url("../images/site/blue_t.jpg")*/
 }
 
 bg_image {
@@ -30,16 +31,17 @@ bg_image {
     outline:none;
 }
 
-.nav {
+.navbar {
     background:transparent;
-    border-radius: 30px;
+    border-radius: 10px;
 }
 
 hr {
     /*display: block;*/
+
     height: 1px;
     border: 0;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid black;
     margin: 1em 0;
     padding: 1em;
     clear: both;
@@ -47,7 +49,7 @@ hr {
 }
 
 .label {
-    color: white;
+    color: black;
 }
 
 .form-container {
@@ -59,6 +61,8 @@ hr {
 
 .demo {
     width:57%;
+    float: center;
+    margin: auto;
 }
 #lightSlider {
     list-style: none outside none;

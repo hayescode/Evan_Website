@@ -4,7 +4,7 @@
 
 <body class="container">
 <div th:replace="fragments :: bg_image"></div>
-<div th:replace="fragments :: navigation"></div>
+<nav th:replace="fragments :: navigation"></nav>
 
 <div th:each="category : ${categories}" class="btn-group" style="margin-top: 5px; margin-bottom: 5px;">
     <a th:href="${category.id}" ><button th:text="${category.category}" class="btn btn-light"></button></a>

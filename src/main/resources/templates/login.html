@@ -4,7 +4,7 @@
 
 <body class="container">
     <div th:replace="fragments :: bg_image"></div>
-    <div th:replace="fragments :: navigation"></div>
+    <nav th:replace="fragments :: navigation"></nav>
     <div th:if="${param.error}">
         Invalid username and password.
     </div>

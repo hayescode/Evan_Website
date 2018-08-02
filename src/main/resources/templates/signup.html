@@ -4,7 +4,7 @@
 
 <body class="container">
     <div th:fragment="bg_image" class="bg_image">
-    <div th:replace="fragments :: navigation"></div>
+    <nav th:replace="fragments :: navigation"></nav>
     <form th:object="${signUpForm}" method="post" class="form-container">
         <div class="form-group">
             <label for="username" class="label">Username</label>
