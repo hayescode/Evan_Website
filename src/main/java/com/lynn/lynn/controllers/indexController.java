@@ -5,7 +5,8 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.lynn.lynn.Security.SecurityService;
 import com.lynn.lynn.Security.UserService;
-import com.lynn.lynn.Security.UserValidator;
+import com.lynn.lynn.Security.Validation.LogInValidator;
+import com.lynn.lynn.Security.Validation.UserValidator;
 import com.lynn.lynn.models.Category.Category;
 import com.lynn.lynn.models.Data.CategoryDAO;
 import com.lynn.lynn.models.Data.ImagesDAO;
@@ -15,6 +16,7 @@ import com.lynn.lynn.models.Images.Images;
 import com.lynn.lynn.models.Images.RotateImage;
 import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -22,8 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -54,6 +54,12 @@ public class indexController {
     @Autowired
     private UserValidator userValidator;
 
+    @Autowired
+    private LogInValidator logInValidator;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model, Principal user) {
         model.addAttribute("title", "Home Page");
@@ -62,24 +68,33 @@ public class indexController {
         if(user != null) {
             String name = user.getName();
             model.addAttribute("user",name);
-            System.out.println(name);
             return "index.html";
         }
         return "index.html";
     }
 
     @RequestMapping(value = "/{cat_id}", method = RequestMethod.GET)
-    public String filteredIndex(Model model, HttpServletRequest request, @PathVariable(value = "cat_id") int cat_id) {
+    public String filteredIndex(Model model, Principal user, @PathVariable(value = "cat_id") int cat_id) {
         model.addAttribute("title", "Home Page");
         model.addAttribute("images", imagesDAO.findByCategoryId(cat_id));
         model.addAttribute("categories", categoryDAO.findAll());
+        if(user != null) {
+            String name = user.getName();
+            model.addAttribute("user",name);
+            return "index.html";
+        }
         return "index.html";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String displayAdd(Model model) {
+    public String displayAdd(Model model, Principal user) {
         model.addAttribute("title", "Add Images");
         model.addAttribute("categories", categoryDAO.findAll());
+        if(user != null) {
+            String name = user.getName();
+            model.addAttribute("user",name);
+            return "add.html";
+        }
         return "add.html";
     }
 
@@ -154,13 +169,16 @@ public class indexController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String processLogin(Model model, @ModelAttribute @Valid LoginForm form, Errors errors) {
+    public String processLogin(Model model, @ModelAttribute LoginForm form, Errors errors) {
+
+        logInValidator.validate(form, errors);
+
         if(errors.hasErrors()) {
-            model.addAttribute("errors", errors);
-            model.addAttribute("title", "Log In");
             return "login.html";
         }
-        return "login.html";
+
+        securityService.autologin(form.getUsername(), form.getPassword());
+        return "redirect:";
     }
 
     @RequestMapping(value = "signup", method = RequestMethod.GET)

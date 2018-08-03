@@ -1,5 +1,6 @@
-package com.lynn.lynn.Security;
+package com.lynn.lynn.Security.Validation;
 
+import com.lynn.lynn.Security.UserService;
 import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
