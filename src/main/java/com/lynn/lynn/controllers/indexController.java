@@ -1,30 +1,22 @@
 package com.lynn.lynn.controllers;
 
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.jpeg.JpegMetadataReader;
-import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.exif.ExifSubIFDDirectory;
-import com.drew.metadata.jpeg.JpegDirectory;
 import com.lynn.lynn.Security.SecurityService;
 import com.lynn.lynn.Security.UserService;
 import com.lynn.lynn.Security.UserValidator;
 import com.lynn.lynn.models.Category.Category;
 import com.lynn.lynn.models.Data.CategoryDAO;
 import com.lynn.lynn.models.Data.ImagesDAO;
-import com.lynn.lynn.models.Data.UserDAO;
+import com.lynn.lynn.models.Data.UserRepository;
 import com.lynn.lynn.models.Forms.LoginForm;
-import com.lynn.lynn.models.Forms.SignUpForm;
 import com.lynn.lynn.models.Images.Images;
 import com.lynn.lynn.models.Images.RotateImage;
-import com.lynn.lynn.models.User.PasswordUtils;
 import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,15 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -48,7 +37,7 @@ import java.util.Optional;
 public class indexController {
 
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
 
     @Autowired
     private ImagesDAO imagesDAO;
@@ -73,6 +62,8 @@ public class indexController {
         if(user != null) {
             String name = user.getName();
             model.addAttribute("user",name);
+            System.out.println(name);
+            return "index.html";
         }
         return "index.html";
     }
@@ -169,30 +160,6 @@ public class indexController {
             model.addAttribute("title", "Log In");
             return "login.html";
         }
-
-        User user = userDAO.findIdByUsername(form.getUsername());
-
-        if(user == null) {
-            model.addAttribute("error", "Username Not Found");
-            model.addAttribute("title", "Log In");
-            return "login.html";
-        }
-
-        String[] userPasswordParts = user.getPassword().split(",");
-        String userHash = userPasswordParts[0];
-        String userSalt = userPasswordParts[1];
-        String loginPassword = PasswordUtils.generateSecurePassword(form.getPassword(),userSalt);
-
-        if(!loginPassword.equals(userHash)) {
-            model.addAttribute("error", "Incorrect Password");
-            model.addAttribute("title", "Log In");
-            return "login.html";
-        }
-
-        //session and persitent 'logged in' stuff here.
-
-        model.addAttribute("title", "Log In");
-        model.addAttribute("test", userHash);
         return "login.html";
     }
 
@@ -213,31 +180,9 @@ public class indexController {
         }
 
         userService.save(userForm);
-        securityService.autologin(userForm.getUsername(),userForm.getPassword());
+        securityService.autologin(userForm.getUsername(),userForm.getPasswordConfirm());
         model.addAttribute("signedIn", "Signed in as " + userForm.getUsername());
 
         return "redirect:";
-
-
-
-
-
-
-        /*User foundUsername = userDAO.findIdByUsername(user.getUsername());
-        if(errors.hasErrors()) {
-            model.addAttribute("title", "Sign Up");
-            model.addAttribute("errors", errors);
-            return "signup.html";
-        } else {
-            if(user.getPassword().equals(user.getVerify()) && foundUsername.getUsername() != user.getUsername()) {
-                User newUser = new User(user.getUsername(), user.getEmail(), user.getPassword());
-                userDAO.save(newUser);
-                model.addAttribute("test", "Success!");
-                return "signup.html";
-            } else {
-                model.addAttribute("title","Sign Up");
-                return "signup.html";
-            }
-        }*/
     }
 }

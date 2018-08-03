@@ -1,7 +1,8 @@
 package com.lynn.lynn.Security;
 
+import com.lynn.lynn.models.Data.UserRepository;
+import com.lynn.lynn.models.User.Role;
 import com.lynn.lynn.models.User.User;
-import com.lynn.lynn.models.Data.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,15 +18,17 @@ import java.util.Set;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService{
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDAO.findByUsername(username);
+        User user = userRepository.findByUsername(username);
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole()));
+        for (Role role : user.getRoles()){
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }

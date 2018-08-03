@@ -1,7 +1,8 @@
 package com.lynn.lynn.Security;
 
+import com.lynn.lynn.models.Data.RoleRepository;
+import com.lynn.lynn.models.Data.UserRepository;
 import com.lynn.lynn.models.User.User;
-import com.lynn.lynn.models.Data.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,20 +12,21 @@ import java.util.HashSet;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserDAO userDAO;
-
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
-        userDAO.save(user);
+        user.setRoles(new HashSet<>(roleRepository.findAll()));
+        userRepository.save(user);
     }
 
     @Override
     public User findByUsername(String username) {
-        return userDAO.findByUsername(username);
+        return userRepository.findByUsername(username);
     }
 }

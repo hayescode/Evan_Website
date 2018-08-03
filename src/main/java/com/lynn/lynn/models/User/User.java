@@ -1,36 +1,26 @@
 package com.lynn.lynn.models.User;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String username;
     private String email;
     private String password;
     private String passwordConfirm;
-    private String role = "USER";
+    private Set<Role> roles;
 
-    public User() {}
-
-    public User(String aUsername, String aEmail, String aPassword) {
-        this.username = aUsername;
-        this.email = aEmail;
-        this.password = hashedPassword(aPassword);
-    }
-
-    //http://www.appsdeveloperblog.com/encrypt-user-password-example-java/
-    private String hashedPassword(String password) {
-        String salt = PasswordUtils.getSalt(32);
-        String hashedPassword = PasswordUtils.generateSecurePassword(password,salt);
-        return hashedPassword + "," + salt;
-    }
-
-    public int getId() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -57,19 +47,22 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
+    @Transient
     public String getPasswordConfirm() {
         return passwordConfirm;
     }
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
