@@ -6,6 +6,10 @@
 <div th:replace="fragments :: bg_image"></div>
 <nav th:replace="fragments :: navigation"></nav>
 
+<button th:if="${signedIn}" type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span th:text="${signedIn}" aria-hidden="true"></span>
+</button>
+
 <div th:each="category : ${categories}" class="btn-group" style="margin-top: 5px; margin-bottom: 5px;">
     <a th:href="${category.id}" ><button th:text="${category.category}" class="btn btn-light"></button></a>
 </div>

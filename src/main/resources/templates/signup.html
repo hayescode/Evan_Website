@@ -5,28 +5,29 @@
 <body class="container">
     <div th:fragment="bg_image" class="bg_image">
     <nav th:replace="fragments :: navigation"></nav>
-    <form th:object="${signUpForm}" method="post" class="form-container">
-        <div class="form-group">
-            <label for="username" class="label">Username</label>
-            <input type="text" class="form-control" id="username"  th:field="*{username}" placeholder="Enter username" />
-            <span th:errors="*{username}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="email" class="label">Email address</label>
-            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter email" />
-            <span th:errors="*{email}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="password" class="label">Password</label>
-            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password" />
-            <span th:errors="*{password}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="verify" class="label">Verify Password</label>
-            <input type="password" class="form-control" id="verify" th:field="*{verify}" placeholder="Verify password" />
-            <span th:errors="*{verify}" class="error"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+
+    <form th:object="${signUpForm}" method="post" class="form-container" th:action="@{/signup}">
+            <div class="form-group">
+                <label for="username" class="label">Username</label>
+                <input type="text" class="form-control" id="username"  th:field="*{username}" placeholder="Enter username" />
+                <span th:errors="*{username}" class="error"></span>
+            </div>
+            <div class="form-group">
+                <label for="email" class="label">Email address</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter email" />
+                <span th:errors="*{email}" class="error"></span>
+            </div>
+            <div class="form-group">
+                <label for="password" class="label">Password</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password" />
+                <span th:errors="*{password}" class="error"></span>
+            </div>
+            <div class="form-group">
+                <label for="passwordConfirm" class="label">Verify Password</label>
+                <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" placeholder="Verify password" />
+                <span th:errors="*{passwordConfirm}" class="error"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
 </body>

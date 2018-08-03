@@ -11,4 +11,6 @@ import javax.transaction.Transactional;
 public interface UserDAO extends CrudRepository<User, Integer> {
 
     User findIdByUsername( String username);
+    User findByUsername(String username);
+    User[] findByRole (String role);
 }

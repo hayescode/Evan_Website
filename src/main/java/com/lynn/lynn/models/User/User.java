@@ -11,6 +11,8 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String passwordConfirm;
+    private String role = "USER";
 
     public User() {}
 
@@ -53,5 +55,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 }

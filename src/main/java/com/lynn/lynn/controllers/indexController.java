@@ -8,6 +8,9 @@ import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
+import com.lynn.lynn.Security.SecurityService;
+import com.lynn.lynn.Security.UserService;
+import com.lynn.lynn.Security.UserValidator;
 import com.lynn.lynn.models.Category.Category;
 import com.lynn.lynn.models.Data.CategoryDAO;
 import com.lynn.lynn.models.Data.ImagesDAO;
@@ -21,6 +24,7 @@ import com.lynn.lynn.models.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +55,15 @@ public class indexController {
 
     @Autowired
     private CategoryDAO categoryDAO;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private UserValidator userValidator;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model, Principal user) {
@@ -186,13 +199,31 @@ public class indexController {
     @RequestMapping(value = "signup", method = RequestMethod.GET)
     public String displaySignup(Model model) {
         model.addAttribute("title", "Sign Up");
-        model.addAttribute("signUpForm", new SignUpForm());
+        model.addAttribute("signUpForm", new User());
         return "signup.html";
     }
 
     @RequestMapping(value = "signup", method = RequestMethod.POST)
-    public String processSignup(Model model, @ModelAttribute @Valid SignUpForm user, Errors errors) {
-        User foundUsername = userDAO.findIdByUsername(user.getUsername());
+    public String processSignup(Model model, @ModelAttribute("signUpForm") User userForm, Errors errors) {
+
+        userValidator.validate(userForm, errors);
+
+        if(errors.hasErrors()) {
+            return "signup.html";
+        }
+
+        userService.save(userForm);
+        securityService.autologin(userForm.getUsername(),userForm.getPassword());
+        model.addAttribute("signedIn", "Signed in as " + userForm.getUsername());
+
+        return "redirect:";
+
+
+
+
+
+
+        /*User foundUsername = userDAO.findIdByUsername(user.getUsername());
         if(errors.hasErrors()) {
             model.addAttribute("title", "Sign Up");
             model.addAttribute("errors", errors);
@@ -207,6 +238,6 @@ public class indexController {
                 model.addAttribute("title","Sign Up");
                 return "signup.html";
             }
-        }
+        }*/
     }
 }
