@@ -101,7 +101,6 @@ public class indexController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String processAdd(@RequestParam("files")MultipartFile[] files,
                              @RequestParam("category") int categoryId) {
-
         for(MultipartFile eachFile : files) {
             //Add each file to the file system
             String fileName = eachFile.getOriginalFilename();
