@@ -38,5 +38,9 @@ public class UserValidator implements Validator {
         if (!user.getPasswordConfirm().equals(user.getPassword())) {
             errors.rejectValue("passwordConfirm", "Diff.userForm.passwordConfirm");
         }
+
+        if (!user.getAccessCode().equals("FTcUP73Ba296")) {
+            errors.rejectValue("accessCode", "Diff.userForm.accessCode");
+        }
     }
 }

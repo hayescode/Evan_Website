@@ -27,6 +27,11 @@
                 <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" placeholder="Verify password" />
                 <span th:errors="*{passwordConfirm}" class="error"></span>
             </div>
+            <div class="form-group">
+                <label for="accessCode" class="label">Access Code</label>
+                <input type="text" class="form-control" id="accessCode" th:field="*{accessCode}" placeholder="Access Code" />
+                <span th:errors="*{accessCode}" class="error"></span>
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
