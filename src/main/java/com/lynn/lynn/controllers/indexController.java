@@ -134,9 +134,16 @@ public class indexController {
                         BufferedImage destinationImage = new BufferedImage(height, width, src.getType());
                         destinationImage = affineTransformOp.filter(src, destinationImage);
                         ImageIO.write(destinationImage, "jpg", new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName));
+                        destinationImage.flush();
+                        convFile.delete();
+                        src.flush();
                     } else {
                         ImageIO.write(src, "jpg", new File("C:\\Users\\Haze\\Projects\\lynn\\src\\main\\resources\\static\\images\\" + fileName));
+                        convFile.delete();
+                        src.flush();
                     }
+                    convFile.delete();
+                    src.flush();
                 }
             } catch (Exception e) {
                 System.out.println("Exception occured" + e.getMessage());
